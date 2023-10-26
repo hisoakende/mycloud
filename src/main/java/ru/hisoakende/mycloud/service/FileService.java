@@ -1,11 +1,11 @@
 package ru.hisoakende.mycloud.service;
 
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.hisoakende.mycloud.entity.File;
 import ru.hisoakende.mycloud.exception.EntityNotFoundException;
 import ru.hisoakende.mycloud.repository.FileRepository;
-
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import ru.hisoakende.mycloud.repository.ObjectRepository;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -14,9 +14,12 @@ import java.util.UUID;
 @Service
 public class FileService implements EntityService<File, UUID> {
 
+    private final ObjectRepository objectRepository;
     private final FileRepository fileRepository;
 
-    public FileService(FileRepository fileRepository) {
+    public FileService(ObjectRepository objectRepository,
+                       FileRepository fileRepository) {
+        this.objectRepository = objectRepository;
         this.fileRepository = fileRepository;
     }
 
@@ -35,6 +38,6 @@ public class FileService implements EntityService<File, UUID> {
 
     @Override
     public void delete(File file) {
-
+        objectRepository.delete(file.getObject());
     }
 }
