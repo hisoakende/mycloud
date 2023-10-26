@@ -1,10 +1,7 @@
 package ru.hisoakende.mycloud.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.hisoakende.mycloud.dto.FileReadDto;
 import ru.hisoakende.mycloud.entity.File;
 import ru.hisoakende.mycloud.mapper.FileMapper;
@@ -34,5 +31,12 @@ public class FileController {
         File file = entityFinder.findEntityOr404(fileService, uuid);
         FileReadDto folderReadDto = fileMapper.FileToFileReadDto(file);
         return ResponseEntity.ok().body(folderReadDto);
+    }
+
+    @DeleteMapping("/{uuid}/")
+    public ResponseEntity<?> deleteRemove(@PathVariable UUID uuid) {
+        File file = entityFinder.findEntityOr404(fileService, uuid);
+        fileService.delete(file);
+        return ResponseEntity.noContent().build();
     }
 }
