@@ -207,7 +207,7 @@ ALTER TABLE ONLY content.folder
 -- Name: object trigger_update_updated_at; Type: TRIGGER; Schema: content; Owner: postgres
 --
 
-CREATE TRIGGER trigger_update_updated_at BEFORE UPDATE ON content.object FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+CREATE TRIGGER trigger_update_updated_at BEFORE INSERT OR UPDATE ON content.object FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 
 --

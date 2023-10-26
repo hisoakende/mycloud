@@ -1,4 +1,4 @@
-package entity;
+package ru.hisoakende.mycloud.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
