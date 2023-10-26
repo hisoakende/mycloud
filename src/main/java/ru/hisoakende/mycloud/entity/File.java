@@ -12,11 +12,14 @@ public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "object_id")
-    private UUID objectId;
+    private UUID object_id;
 
     private String name;
 
     private String path;
 
+    @OneToOne
+    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "object_id")
+    private Object object;
 }

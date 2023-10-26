@@ -1,9 +1,9 @@
 package ru.hisoakende.mycloud.repository;
 
-import ru.hisoakende.mycloud.entity.File;
 import org.springframework.data.jpa.repository.JpaRepository;
+import ru.hisoakende.mycloud.entity.Object;
 
 import java.util.UUID;
 
-public interface FileRepository extends JpaRepository<File, UUID> {
+public interface ObjectRepository extends JpaRepository<Object, UUID> {
 }
