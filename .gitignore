@@ -26,7 +26,6 @@ src/main/resources/.env
 *.iws
 *.iml
 *.ipr
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
