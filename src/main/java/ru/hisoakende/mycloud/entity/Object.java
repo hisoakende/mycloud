@@ -3,11 +3,10 @@ package ru.hisoakende.mycloud.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Generated;
-
 import java.util.*;
 
 
-@Entity(name = "object")
+@Entity
 @Data
 public class Object {
 
