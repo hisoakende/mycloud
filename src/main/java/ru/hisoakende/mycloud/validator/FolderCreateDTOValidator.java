@@ -1,30 +1,25 @@
-package ru.hisoakende.mycloud.validators;
+package ru.hisoakende.mycloud.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.hisoakende.mycloud.dto.FolderCreateDTO;
+import ru.hisoakende.mycloud.dto.FolderCreateDto;
 import ru.hisoakende.mycloud.entity.Folder;
-import ru.hisoakende.mycloud.exceptions.EntityNotFoundException;
-import ru.hisoakende.mycloud.services.FolderService;
-import ru.hisoakende.mycloud.validators.constraint.FolderCreateDTOConstraint;
+import ru.hisoakende.mycloud.exception.EntityNotFoundException;
+import ru.hisoakende.mycloud.service.FolderService;
+import ru.hisoakende.mycloud.validator.constraint.FolderCreateDTOConstraint;
 
 import java.util.UUID;
 
 @Component
-public class FolderCreateDTOValidator implements ConstraintValidator<FolderCreateDTOConstraint, FolderCreateDTO> {
+public class FolderCreateDTOValidator implements ConstraintValidator<FolderCreateDTOConstraint, FolderCreateDto> {
 
     @Autowired
     private FolderService folderService;
 
     @Override
-    public void initialize(FolderCreateDTOConstraint constraintAnnotation) {
-        ConstraintValidator.super.initialize(constraintAnnotation);
-    }
-
-    @Override
-    public boolean isValid(FolderCreateDTO folderCreateDTO, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(FolderCreateDto folderCreateDTO, ConstraintValidatorContext constraintValidatorContext) {
         UUID parentFolderId = folderCreateDTO.getParentFolderId();
         Folder parentFolder;
         try {

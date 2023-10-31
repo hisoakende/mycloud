@@ -1,8 +1,9 @@
-package ru.hisoakende.mycloud.services;
+package ru.hisoakende.mycloud.service;
 
-import ru.hisoakende.mycloud.exceptions.EntityNotFoundException;
+import ru.hisoakende.mycloud.exception.EntityNotFoundException;
 
 public interface EntityService<Entity, IdType> {
     Entity getById(IdType id) throws EntityNotFoundException;
+
     Entity save(Entity entity);
 }

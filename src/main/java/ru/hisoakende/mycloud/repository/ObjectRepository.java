@@ -1,4 +1,4 @@
-package ru.hisoakende.mycloud.repositories;
+package ru.hisoakende.mycloud.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -8,5 +8,4 @@ import java.util.UUID;
 
 @Repository
 public interface ObjectRepository extends JpaRepository<Object, UUID> {
-    public Object getObjectByUuid(UUID uuid);
 }

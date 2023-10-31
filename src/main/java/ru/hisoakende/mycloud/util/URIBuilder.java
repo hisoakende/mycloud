@@ -1,4 +1,4 @@
-package ru.hisoakende.mycloud.utils;
+package ru.hisoakende.mycloud.util;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 

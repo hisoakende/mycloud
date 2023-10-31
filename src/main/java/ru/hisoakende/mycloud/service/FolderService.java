@@ -1,27 +1,29 @@
-package ru.hisoakende.mycloud.services;
+package ru.hisoakende.mycloud.service;
 
 import org.springframework.stereotype.Service;
 import ru.hisoakende.mycloud.entity.Folder;
 import ru.hisoakende.mycloud.entity.Object;
-import ru.hisoakende.mycloud.exceptions.EntityNotFoundException;
-import ru.hisoakende.mycloud.repositories.FolderRepository;
+import ru.hisoakende.mycloud.exception.EntityNotFoundException;
+import ru.hisoakende.mycloud.repository.FolderRepository;
+import ru.hisoakende.mycloud.repository.ObjectRepository;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class FolderService implements EntityService<Folder, UUID>{
+public class FolderService implements EntityService<Folder, UUID> {
 
     private final FolderRepository folderRepository;
-    private final ObjectService objectService;
+    private final ObjectRepository objectRepository;
 
-    public FolderService(FolderRepository folderRepository, ObjectService objectService) {
+    public FolderService(FolderRepository folderRepository, ObjectRepository objectRepository) {
         this.folderRepository = folderRepository;
-        this.objectService = objectService;
+        this.objectRepository = objectRepository;
     }
 
     public Folder create(Folder folder) {
-        Object object = objectService.create();
+        Object object = new Object();
+        object =  objectRepository.save(object);
         folder.setObjectId(object.getUuid());
         folderRepository.save(folder);
         folder.setObject(object);
@@ -38,18 +40,17 @@ public class FolderService implements EntityService<Folder, UUID>{
     public Folder getById(UUID objectId) throws EntityNotFoundException {
         Optional<Folder> folder = folderRepository.findById(objectId);
         if (folder.isEmpty()) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("Folder not found");
         }
         return folder.get();
     }
 
-    public boolean isUniqueFolderFromParent(String name, Folder parentFolder){
+    public boolean isUniqueFolderFromParent(String name, Folder parentFolder) {
         for (Folder child : parentFolder.getChildFolders()) {
             if (child.getName().equals(name)) return false;
         }
         return true;
     }
-
 
 
 }

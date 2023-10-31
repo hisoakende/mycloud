@@ -9,7 +9,7 @@ import java.util.*;
 
 @Data
 @Entity(name = "folder")
-public class Folder implements Serializable {
+public class Folder {
 
     @Id
     @Column(name = "object_id")

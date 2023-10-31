@@ -1,8 +1,8 @@
-package ru.hisoakende.mycloud.validators.constraint;
+package ru.hisoakende.mycloud.validator.constraint;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import ru.hisoakende.mycloud.validators.FolderCreateDTOValidator;
+import ru.hisoakende.mycloud.validator.FolderCreateDTOValidator;
 
 import java.lang.annotation.*;
 

@@ -7,7 +7,8 @@ import org.hibernate.annotations.Generated;
 import java.util.*;
 
 
-@Entity(name = "object")
+@Entity
+@Table(name = "object")
 @Data
 public class Object {
 
@@ -25,9 +26,6 @@ public class Object {
     @Temporal(TemporalType.TIMESTAMP)
     @Generated
     private Date updatedAt;
-
-    @OneToOne(mappedBy = "object")
-    private Folder folders;
 
     @Override
     public String toString() {
