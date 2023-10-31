@@ -26,13 +26,13 @@ public class FileService implements EntityService<File, UUID> {
     public File getById(UUID id) throws EntityNotFoundException {
         Optional<File> file = fileRepository.findById(id);
         if (file.isEmpty()) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("File not found");
         }
         return file.get();
     }
 
     @Override
-    public File create(File file) {
+    public File save(File file) {
         return null;
     }
 

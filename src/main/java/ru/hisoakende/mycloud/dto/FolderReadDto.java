@@ -1,5 +1,6 @@
 package ru.hisoakende.mycloud.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import ru.hisoakende.mycloud.entity.Folder;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
+@Builder
 public class FolderReadDto {
 
     private UUID uuid;

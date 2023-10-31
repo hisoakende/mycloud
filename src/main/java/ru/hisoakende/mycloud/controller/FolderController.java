@@ -8,7 +8,7 @@ import ru.hisoakende.mycloud.dto.FolderReadDto;
 import ru.hisoakende.mycloud.entity.Folder;
 import ru.hisoakende.mycloud.service.FolderService;
 import ru.hisoakende.mycloud.util.EntityFinder;
-import ru.hisoakende.mycloud.util.mapper.FolderMapper;
+import ru.hisoakende.mycloud.mapper.FolderMapper;
 import ru.hisoakende.mycloud.util.URIBuilder;
 
 import java.net.URI;

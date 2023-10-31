@@ -1,4 +1,4 @@
-package ru.hisoakende.mycloud.util.mapper;
+package ru.hisoakende.mycloud.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import ru.hisoakende.mycloud.dto.FolderPreviewDto;
 import ru.hisoakende.mycloud.dto.FolderReadDto;
 import ru.hisoakende.mycloud.entity.Folder;
 import ru.hisoakende.mycloud.entity.Object;
-import ru.hisoakende.mycloud.repository.FolderRepository;
+
 
 import java.util.*;
 
@@ -29,16 +29,19 @@ public class FolderMapper {
 
     public FolderReadDto folderToFolderReadDTO(Folder folder) {
         Object object = folder.getObject();
-        FolderReadDto folderReadDTO = modelMapper.map(folder, FolderReadDto.class);
-        folderReadDTO.setCreatedAt(object.getCreatedAt());
-        folderReadDTO.setUpdatedAt(object.getUpdatedAt());
-        folderReadDTO.setUuid(folder.getObjectId());
-        folderReadDTO.setParentFolderId(folder.getParentFolder().getObjectId());
-        if (folder.getChildFolders() == null)
-            folderReadDTO.setChildFolders(new ArrayList<>());
-        else
-            folderReadDTO.setChildFolders(listFolderToListFolderPreviewDto(folder.getChildFolders()));
-
+        FolderReadDto folderReadDTO = FolderReadDto.builder()
+                .uuid(folder.getObjectId())
+                .name(folder.getName())
+                .parentFolderId(folder.getParentFolderId())
+                .createdAt(object.getCreatedAt())
+                .updatedAt(object.getUpdatedAt()).build();
+        List<FolderPreviewDto> previewDtoList;
+        if (folder.getChildFolders() == null) {
+            previewDtoList = new ArrayList<>();
+        } else {
+            previewDtoList = listFolderToListFolderPreviewDto(folder.getChildFolders());
+        }
+        folderReadDTO.setChildFolders(previewDtoList);
         return folderReadDTO;
     }
 
@@ -49,8 +52,7 @@ public class FolderMapper {
                     .uuid(childFolder.getObjectId())
                     .name(childFolder.getName())
                     .createdAt(childFolder.getObject().getCreatedAt())
-                    .updatedAt(childFolder.getObject().getUpdatedAt())
-                    .build();
+                    .updatedAt(childFolder.getObject().getUpdatedAt()).build();
             previewDtoList.add(mapChildFolder);
         }
         return previewDtoList;

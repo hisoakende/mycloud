@@ -37,6 +37,10 @@ public class FolderService implements EntityService<Folder, UUID> {
     }
 
     @Override
+    public void delete(Folder folder) {
+        folderRepository.delete(folder);
+    }
+    @Override
     public Folder getById(UUID objectId) throws EntityNotFoundException {
         Optional<Folder> folder = folderRepository.findById(objectId);
         if (folder.isEmpty()) {

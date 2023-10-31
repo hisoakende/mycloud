@@ -17,7 +17,7 @@ public class Folder {
 
     private String name;
 
-    @Transient
+    @Column(name = "parent_folder_id", insertable = false, updatable = false)
     private UUID parentFolderId;
 
     @ManyToOne

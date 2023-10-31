@@ -34,7 +34,7 @@ public class FileController {
     }
 
     @DeleteMapping("/{uuid}/")
-    public ResponseEntity<?> deleteRemove(@PathVariable UUID uuid) {
+    public ResponseEntity<?> deleteFile(@PathVariable UUID uuid) {
         File file = entityFinder.findEntityOr404(fileService, uuid);
         fileService.delete(file);
         return ResponseEntity.noContent().build();
