@@ -3,7 +3,6 @@ package ru.hisoakende.mycloud.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Generated;
-
 import java.util.*;
 
 
