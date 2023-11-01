@@ -32,7 +32,7 @@ public class FileService implements EntityService<File, UUID> {
     }
 
     @Override
-    public File save(File file) {
+    public File create(File file) {
         return null;
     }
 

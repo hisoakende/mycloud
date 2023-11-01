@@ -43,5 +43,4 @@ public class FolderController {
         URI location = new URIBuilder<>(folderReadDTO.getUuid()).build();
         return ResponseEntity.created(location).body(folderReadDTO);
     }
-
 }
