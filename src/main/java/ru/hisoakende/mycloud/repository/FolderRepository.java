@@ -1,11 +1,11 @@
 package ru.hisoakende.mycloud.repository;
 
+import ru.hisoakende.mycloud.entity.Folder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.hisoakende.mycloud.entity.Object;
 
 import java.util.UUID;
 
 @Repository
-public interface ObjectRepository extends JpaRepository<Object, UUID> {
+public interface FolderRepository extends JpaRepository<Folder, UUID> {
 }
