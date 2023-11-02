@@ -1,17 +1,24 @@
 package ru.hisoakende.mycloud.controller;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import ru.hisoakende.mycloud.dto.FileCreateDto;
 import ru.hisoakende.mycloud.dto.FileReadDto;
 import ru.hisoakende.mycloud.entity.File;
+import ru.hisoakende.mycloud.exception.InvalidDataException;
 import ru.hisoakende.mycloud.mapper.FileMapper;
 import ru.hisoakende.mycloud.service.FileService;
 import ru.hisoakende.mycloud.util.EntityFinder;
+import ru.hisoakende.mycloud.util.URIBuilder;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/files/")
+@RequestMapping("/api/files")
 public class FileController {
 
     private final FileService fileService;
@@ -26,14 +33,29 @@ public class FileController {
         this.entityFinder = entityFinder;
     }
 
-    @GetMapping("/{uuid}/")
+    @GetMapping("/{uuid}")
     public ResponseEntity<FileReadDto> getFile(@PathVariable UUID uuid) {
         File file = entityFinder.findEntityOr404(fileService, uuid);
-        FileReadDto folderReadDto = fileMapper.FileToFileReadDto(file);
+        FileReadDto folderReadDto = fileMapper.fileToFileReadDto(file);
         return ResponseEntity.ok().body(folderReadDto);
     }
 
-    @DeleteMapping("/{uuid}/")
+    @PostMapping
+    public ResponseEntity<FileReadDto> createFileMeta(@Valid @RequestBody FileCreateDto fileCreateDto) {
+        File file = fileMapper.fileCreateDtoToFile(fileCreateDto);
+        try {
+            file = fileService.create(file);
+        } catch (InvalidDataException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
+        }
+
+        FileReadDto fileReadDto = fileMapper.fileToFileReadDto(file);
+        URI location = new URIBuilder<>(fileReadDto.getUuid()).build();
+        return ResponseEntity.created(location).body(fileReadDto);
+    }
+
+
+    @DeleteMapping("/{uuid}")
     public ResponseEntity<?> deleteFile(@PathVariable UUID uuid) {
         File file = entityFinder.findEntityOr404(fileService, uuid);
         fileService.delete(file);
