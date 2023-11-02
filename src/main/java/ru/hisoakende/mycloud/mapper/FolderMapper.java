@@ -14,11 +14,12 @@ import java.util.*;
 
 @Component
 public class FolderMapper {
+
     @Autowired
     private ModelMapper modelMapper;
 
 
-    public Folder folderDtoToFolder(FolderCreateDto folderCreateDTO) {
+    public Folder folderCreateDtoToFolder(FolderCreateDto folderCreateDTO) {
         Folder folder = modelMapper.map(folderCreateDTO, Folder.class);
         Folder mockParentFolder = new Folder();
         mockParentFolder.setObjectId(folderCreateDTO.getParentFolderId());
@@ -27,7 +28,7 @@ public class FolderMapper {
         return folder;
     }
 
-    public FolderReadDto folderToFolderReadDTO(Folder folder) {
+    public FolderReadDto folderToFolderReadDto(Folder folder) {
         Object object = folder.getObject();
         FolderReadDto folderReadDTO = FolderReadDto.builder()
                 .uuid(folder.getObjectId())

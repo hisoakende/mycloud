@@ -1,12 +1,16 @@
 package ru.hisoakende.mycloud.service;
 
+import org.postgresql.util.PSQLException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.hisoakende.mycloud.entity.Folder;
 import ru.hisoakende.mycloud.entity.Object;
 import ru.hisoakende.mycloud.exception.EntityNotFoundException;
+import ru.hisoakende.mycloud.exception.InvalidDataException;
 import ru.hisoakende.mycloud.repository.FolderRepository;
 import ru.hisoakende.mycloud.repository.ObjectRepository;
 
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,25 +36,22 @@ public class FolderService implements EntityService<Folder, UUID> {
     }
 
     @Override
-    public Folder create(Folder folder) {
-        Object object = new Object();
-        object = objectRepository.save(object);
+    public Folder create(Folder folder) throws InvalidDataException {
+        Object object = objectRepository.save(new Object());
         folder.setObjectId(object.getUuid());
-        folderRepository.save(folder);
-        folder.setObject(object);
 
+        try {
+            folderRepository.save(folder);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidDataException(e.getMessage());
+        }
+
+        folder.setObject(object);
         return folder;
     }
 
     @Override
     public void delete(Folder folder) {
         folderRepository.delete(folder);
-    }
-
-    public boolean isUniqueFolderFromParent(String name, Folder parentFolder) {
-        for (Folder child : parentFolder.getChildFolders()) {
-            if (child.getName().equals(name)) return false;
-        }
-        return true;
     }
 }
