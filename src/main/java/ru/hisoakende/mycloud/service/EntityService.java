@@ -8,5 +8,7 @@ public interface EntityService<Entity, IdType> {
 
     Entity create(Entity entity) throws InvalidDataException;
 
+    Entity save(Entity Entity);
+
     void delete(Entity entity);
 }

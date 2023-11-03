@@ -1,12 +1,19 @@
 package ru.hisoakende.mycloud.service;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.hisoakende.mycloud.entity.File;
+import ru.hisoakende.mycloud.entity.Object;
 import ru.hisoakende.mycloud.exception.EntityNotFoundException;
+import ru.hisoakende.mycloud.exception.InvalidDataException;
+import ru.hisoakende.mycloud.exception.InvalidFileException;
 import ru.hisoakende.mycloud.repository.FileRepository;
 import ru.hisoakende.mycloud.repository.ObjectRepository;
+import ru.hisoakende.mycloud.util.FileSaver;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,11 +23,14 @@ public class FileService implements EntityService<File, UUID> {
 
     private final ObjectRepository objectRepository;
     private final FileRepository fileRepository;
+    private final FileSaver fileSaver;
 
     public FileService(ObjectRepository objectRepository,
-                       FileRepository fileRepository) {
+                       FileRepository fileRepository,
+                       FileSaver fileSaver) {
         this.objectRepository = objectRepository;
         this.fileRepository = fileRepository;
+        this.fileSaver = fileSaver;
     }
 
     public File getById(UUID id) throws EntityNotFoundException {
@@ -32,8 +42,34 @@ public class FileService implements EntityService<File, UUID> {
     }
 
     @Override
-    public File create(File file) {
-        return null;
+    public File create(File file) throws InvalidDataException {
+        Object object = objectRepository.save(new Object());
+        file.setObjectId(object.getUuid());
+
+        try {
+            fileRepository.save(file);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidDataException(e.getMessage());
+        }
+
+        file.setObject(object);
+        return file;
+    }
+
+    @Override
+    public File save(File file) {
+        return fileRepository.save(file);
+    }
+
+    public void uploadFileData(MultipartFile fileData, File file)
+            throws InvalidFileException, IOException {
+        if (fileData.isEmpty()) {
+            throw new InvalidFileException("Failed to store empty file.");
+        }
+
+        String destination = fileSaver.save(fileData);
+        file.setPath(destination);
+        fileRepository.save(file);
     }
 
     @Override

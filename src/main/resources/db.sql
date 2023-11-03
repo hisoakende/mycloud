@@ -50,3 +50,4 @@ ALTER TABLE content.object
 
 ALTER TABLE content.file ADD CONSTRAINT unique_file_name_in_folder UNIQUE (name, folder_id);
 ALTER TABLE content.folder ADD CONSTRAINT unique_folder_name_in_folder UNIQUE (name, parent_folder_id);
+ALTER TABLE content.file ALTER COLUMN path DROP NOT NULL;

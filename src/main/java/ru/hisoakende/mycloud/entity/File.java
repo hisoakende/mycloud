@@ -11,15 +11,21 @@ import java.util.UUID;
 public class File {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID object_id;
+    @Column(name = "object_id")
+    private UUID objectId;
 
     private String name;
 
     private String path;
 
+    @Column(name = "folder_id", insertable = false, updatable = false)
+    private UUID folderId;
+
+    @ManyToOne
+    @JoinColumn(name = "folder_id")
+    private Folder folder;
+
     @OneToOne
-    @PrimaryKeyJoinColumn
     @JoinColumn(name = "object_id")
     private Object object;
 }
