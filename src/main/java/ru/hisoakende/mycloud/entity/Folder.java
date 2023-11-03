@@ -27,6 +27,9 @@ public class Folder {
     @OneToMany(mappedBy = "parentFolder")
     private List<Folder> childFolders;
 
+    @OneToMany(mappedBy = "folder")
+    private List<File> files;
+
     @OneToOne
     @JoinColumn(name = "object_id")
     private Object object;

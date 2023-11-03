@@ -5,7 +5,6 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.hisoakende.mycloud.dto.FolderCreateDto;
-import ru.hisoakende.mycloud.entity.Folder;
 import ru.hisoakende.mycloud.exception.EntityNotFoundException;
 import ru.hisoakende.mycloud.service.FolderService;
 import ru.hisoakende.mycloud.validator.constraint.FolderCreateDtoConstraint;

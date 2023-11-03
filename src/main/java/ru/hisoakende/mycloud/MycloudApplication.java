@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import ru.hisoakende.mycloud.util.FileSaver;
 
 @SpringBootApplication
 public class MycloudApplication {
