@@ -12,6 +12,7 @@ import ru.hisoakende.mycloud.repository.FolderRepository;
 import ru.hisoakende.mycloud.repository.ObjectRepository;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,8 +63,11 @@ public class FolderService implements EntityService<Folder, UUID> {
             return folder;
         }
         folder.setName(folderPatchDto.getName());
+        Object object = folder.getObject();
+        object.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         try {
             folderRepository.save(folder);
+            objectRepository.save(object);
         } catch (DataIntegrityViolationException e) {
             throw new InvalidDataException(e.getMessage());
         }
