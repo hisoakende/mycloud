@@ -3,6 +3,7 @@ package ru.hisoakende.mycloud.service;
 import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import ru.hisoakende.mycloud.dto.FolderPatchDto;
 import ru.hisoakende.mycloud.entity.Folder;
 import ru.hisoakende.mycloud.entity.Object;
 import ru.hisoakende.mycloud.exception.EntityNotFoundException;
@@ -53,5 +54,23 @@ public class FolderService implements EntityService<Folder, UUID> {
     @Override
     public void delete(Folder folder) {
         folderRepository.delete(folder);
+    }
+
+    public Folder patch(FolderPatchDto folderPatchDto, UUID uuid) throws InvalidDataException, EntityNotFoundException {
+        Folder folder = getById(uuid);
+        if (isSame(folder, folderPatchDto)) {
+            return folder;
+        }
+        folder.setName(folderPatchDto.getName());
+        try {
+            folderRepository.save(folder);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidDataException(e.getMessage());
+        }
+        return folder;
+    }
+
+    public boolean isSame(Folder folder, FolderPatchDto folderPatchDto) {
+        return folder.getName().equals(folderPatchDto.getName());
     }
 }

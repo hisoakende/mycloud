@@ -6,8 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.hisoakende.mycloud.dto.FolderCreateDto;
+import ru.hisoakende.mycloud.dto.FolderPatchDto;
 import ru.hisoakende.mycloud.dto.FolderReadDto;
 import ru.hisoakende.mycloud.entity.Folder;
+import ru.hisoakende.mycloud.exception.EntityNotFoundException;
 import ru.hisoakende.mycloud.exception.InvalidDataException;
 import ru.hisoakende.mycloud.service.FolderService;
 import ru.hisoakende.mycloud.util.EntityFinder;
@@ -52,5 +54,19 @@ public class FolderController {
         FolderReadDto folderReadDTO = folderMapper.folderToFolderReadDto(folder);
         URI location = new URIBuilder<>(folderReadDTO.getUuid()).build();
         return ResponseEntity.created(location).body(folderReadDTO);
+    }
+
+    @PatchMapping("/{uuid}") //todo обновление поля updatedAt
+    public ResponseEntity<FolderReadDto> patchFolder(@Valid @RequestBody FolderPatchDto folderPatchDto,
+                                                     @PathVariable UUID uuid) {
+        Folder folder;
+        try {
+            folder = folderService.patch(folderPatchDto, uuid);
+        } catch (InvalidDataException | EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
+        }
+        FolderReadDto folderReadDto = folderMapper.folderToFolderReadDto(folder);
+        return ResponseEntity.ok().body(folderReadDto);
+
     }
 }
