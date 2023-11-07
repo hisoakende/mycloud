@@ -51,11 +51,6 @@ public class FolderService implements EntityService<Folder, UUID> {
     }
 
     @Override
-    public Folder save(Folder folder) {
-        return folderRepository.save(folder);
-    }
-
-    @Override
     public void delete(Folder folder) {
         folderRepository.delete(folder);
     }

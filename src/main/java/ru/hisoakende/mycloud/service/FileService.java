@@ -56,11 +56,6 @@ public class FileService implements EntityService<File, UUID> {
         return file;
     }
 
-    @Override
-    public File save(File file) {
-        return fileRepository.save(file);
-    }
-
     public void uploadFileData(MultipartFile fileData, File file)
             throws InvalidFileException, IOException {
         if (fileData.isEmpty()) {
