@@ -27,7 +27,7 @@ public class Folder {
     @OneToMany(mappedBy = "parentFolder")
     private List<Folder> childFolders;
 
-    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "folder")
     private List<File> files;
 
     @OneToOne
