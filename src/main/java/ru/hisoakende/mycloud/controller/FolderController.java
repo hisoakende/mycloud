@@ -55,10 +55,9 @@ public class FolderController {
     }
 
     @DeleteMapping("/{uuid}") //todo удалять object, на которые не ссылаются fk
-    public ResponseEntity<FolderReadDto> deleteFolder(@PathVariable UUID uuid) {
+    public ResponseEntity<?> deleteFolder(@PathVariable UUID uuid) {
         Folder folder = entityFinder.findEntityOr404(folderService, uuid);
-        FolderReadDto folderReadDTO = folderMapper.folderToFolderReadDto(folder);
         folderService.delete(folder);
-        return ResponseEntity.ok().body(folderReadDTO);
+        return ResponseEntity.noContent().build();
     }
 }
