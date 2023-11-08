@@ -53,4 +53,11 @@ public class FolderController {
         URI location = new URIBuilder<>(folderReadDTO.getUuid()).build();
         return ResponseEntity.created(location).body(folderReadDTO);
     }
+
+    @DeleteMapping("/{uuid}") //todo удалять object, на которые не ссылаются fk
+    public ResponseEntity<?> deleteFolder(@PathVariable UUID uuid) {
+        Folder folder = entityFinder.findEntityOr404(folderService, uuid);
+        folderService.delete(folder);
+        return ResponseEntity.noContent().build();
+    }
 }
