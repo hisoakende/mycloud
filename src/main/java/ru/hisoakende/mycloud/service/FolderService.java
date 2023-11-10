@@ -57,11 +57,7 @@ public class FolderService implements EntityService<Folder, UUID> {
         folderRepository.delete(folder);
     }
 
-    public Folder patch(FolderPatchDto folderPatchDto, UUID uuid) throws InvalidDataException, EntityNotFoundException {
-        Folder folder = getById(uuid);
-        if (isSame(folder, folderPatchDto)) {
-            return folder;
-        }
+    public Folder update(Folder folder, FolderPatchDto folderPatchDto) throws InvalidDataException {
         folder.setName(folderPatchDto.getName());
         Object object = folder.getObject();
         object.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
@@ -72,9 +68,7 @@ public class FolderService implements EntityService<Folder, UUID> {
             throw new InvalidDataException(e.getMessage());
         }
         return folder;
+
     }
 
-    public boolean isSame(Folder folder, FolderPatchDto folderPatchDto) {
-        return folder.getName().equals(folderPatchDto.getName());
-    }
 }

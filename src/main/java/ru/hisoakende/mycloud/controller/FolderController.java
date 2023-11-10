@@ -56,17 +56,23 @@ public class FolderController {
         return ResponseEntity.created(location).body(folderReadDTO);
     }
 
-    @PatchMapping("/{uuid}") //todo обновление поля updatedAt
-    public ResponseEntity<FolderReadDto> patchFolder(@Valid @RequestBody FolderPatchDto folderPatchDto,
+    @PatchMapping("/{uuid}")
+    public ResponseEntity<FolderReadDto> updateFolder(@Valid @RequestBody FolderPatchDto folderPatchDto,
                                                      @PathVariable UUID uuid) {
-        Folder folder;
+        Folder folder = null;
         try {
-            folder = folderService.patch(folderPatchDto, uuid);
-        } catch (InvalidDataException | EntityNotFoundException e) {
+            folder = folderService.getById(uuid);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Folder not found");
+        }
+        try {
+            folder = folderService.update(folder, folderPatchDto);
+        } catch (InvalidDataException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
         }
+
         FolderReadDto folderReadDto = folderMapper.folderToFolderReadDto(folder);
         return ResponseEntity.ok().body(folderReadDto);
-
     }
+
 }
