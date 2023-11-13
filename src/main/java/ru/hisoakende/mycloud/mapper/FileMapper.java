@@ -29,6 +29,7 @@ public class FileMapper {
         return new FileReadDto(
                 object.getUuid(),
                 file.getName(),
+                file.getPath(),
                 file.getFolderId(),
                 object.getCreatedAt(),
                 object.getUpdatedAt()
