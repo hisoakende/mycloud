@@ -21,9 +21,8 @@ public class Object {
     @Generated
     private Date createdAt;
 
-    @Column(name = "updated_at", insertable = false, updatable = false)
+    @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
-    @Generated
     private Date updatedAt;
 
     @Override

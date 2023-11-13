@@ -6,8 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.hisoakende.mycloud.dto.FolderCreateDto;
+import ru.hisoakende.mycloud.dto.FolderPatchDto;
 import ru.hisoakende.mycloud.dto.FolderReadDto;
 import ru.hisoakende.mycloud.entity.Folder;
+import ru.hisoakende.mycloud.exception.EntityNotFoundException;
 import ru.hisoakende.mycloud.exception.InvalidDataException;
 import ru.hisoakende.mycloud.service.FolderService;
 import ru.hisoakende.mycloud.util.EntityFinder;
@@ -54,7 +56,26 @@ public class FolderController {
         return ResponseEntity.created(location).body(folderReadDTO);
     }
 
-    @DeleteMapping("/{uuid}") //todo удалять object, на которые не ссылаются fk
+    @PatchMapping("/{uuid}")
+    public ResponseEntity<FolderReadDto> updateFolder(@Valid @RequestBody FolderPatchDto folderPatchDto,
+                                                     @PathVariable UUID uuid) {
+        Folder folder = null;
+        try {
+            folder = folderService.getById(uuid);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Folder not found");
+        }
+        try {
+            folder = folderService.update(folder, folderPatchDto);
+        } catch (InvalidDataException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
+        }
+
+        FolderReadDto folderReadDto = folderMapper.folderToFolderReadDto(folder);
+        return ResponseEntity.ok().body(folderReadDto);
+    }
+
+    @DeleteMapping("/{uuid}")
     public ResponseEntity<?> deleteFolder(@PathVariable UUID uuid) {
         Folder folder = entityFinder.findEntityOr404(folderService, uuid);
         folderService.delete(folder);
