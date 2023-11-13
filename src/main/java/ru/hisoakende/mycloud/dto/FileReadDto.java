@@ -14,6 +14,8 @@ public class FileReadDto {
 
     private String name;
 
+    private String path;
+
     private UUID folderId;
 
     private Date createdAt;
