@@ -63,11 +63,27 @@ public class FolderService implements EntityService<Folder, UUID> {
         object.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         try {
             folderRepository.save(folder);
-            objectRepository.save(object);
         } catch (DataIntegrityViolationException e) {
             throw new InvalidDataException(e.getMessage());
         }
+        objectRepository.save(object);
+
         return folder;
+    }
+
+    public void move(Folder folder, UUID parentFolderID) throws InvalidDataException, EntityNotFoundException {
+        Folder newParentFolder = getById(parentFolderID);
+        if (folder.getChildFolders().contains(newParentFolder)) {
+            throw new InvalidDataException("New parent folder is child");
+        }
+        folder.setParentFolder(newParentFolder);
+
+        try {
+            folderRepository.save(folder);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidDataException(e.getMessage());
+        }
 
     }
+
 }

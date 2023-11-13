@@ -33,7 +33,7 @@ public class FolderMapper {
         FolderReadDto folderReadDTO = FolderReadDto.builder()
                 .uuid(folder.getObjectId())
                 .name(folder.getName())
-                .parentFolderId(folder.getParentFolderId())
+                .parentFolderId(folder.getParentFolder().getObjectId())
                 .createdAt(object.getCreatedAt())
                 .updatedAt(object.getUpdatedAt()).build();
         List<FolderPreviewDto> previewDtoList;

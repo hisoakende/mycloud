@@ -81,4 +81,24 @@ public class FolderController {
         folderService.delete(folder);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/move/{uuid}")
+    public ResponseEntity<FolderReadDto> moveFolder(@PathVariable UUID uuid, @RequestHeader UUID parentFolderId) {
+        Folder folder = null;
+        try {
+            folder = folderService.getById(uuid);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Folder not found");
+        }
+        try {
+            folderService.move(folder, parentFolderId);
+        } catch (InvalidDataException | EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
+        }
+        FolderReadDto folderReadDto = folderMapper.folderToFolderReadDto(folder);
+
+        return ResponseEntity.ok().body(folderReadDto);
+    }
+
+
 }
