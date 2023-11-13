@@ -54,7 +54,7 @@ public class FolderService implements EntityService<Folder, UUID> {
 
     @Override
     public void delete(Folder folder) {
-        folderRepository.delete(folder);
+        objectRepository.delete(folder.getObject());
     }
 
     public Folder update(Folder folder, FolderPatchDto folderPatchDto) throws InvalidDataException {
@@ -85,4 +85,5 @@ public class FolderService implements EntityService<Folder, UUID> {
         }
 
     }
+
 }

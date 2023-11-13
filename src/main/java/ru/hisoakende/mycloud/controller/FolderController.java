@@ -75,6 +75,13 @@ public class FolderController {
         return ResponseEntity.ok().body(folderReadDto);
     }
 
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<?> deleteFolder(@PathVariable UUID uuid) {
+        Folder folder = entityFinder.findEntityOr404(folderService, uuid);
+        folderService.delete(folder);
+        return ResponseEntity.noContent().build();
+    }
+
     @PatchMapping("/move/{uuid}")
     public ResponseEntity<FolderReadDto> moveFolder(@PathVariable UUID uuid, @RequestHeader UUID parentFolderId) {
         Folder folder = null;
@@ -92,4 +99,6 @@ public class FolderController {
 
         return ResponseEntity.ok().body(folderReadDto);
     }
+
+
 }
