@@ -72,15 +72,19 @@ public class FolderService implements EntityService<Folder, UUID> {
         return folder;
     }
 
-    public void move(Folder folder, FolderParentIdDto folderParentIdDto)
-            throws InvalidDataException, EntityNotFoundException {
+    public void move(Folder folder, FolderParentIdDto folderParentIdDto) throws InvalidDataException{
 
-        UUID parentFolderId =folderParentIdDto.getParentFolderId();
-        List<UUID> childIds= folderRepository.getChildIds(folder.getObjectId());
+        UUID parentFolderId = folderParentIdDto.getParentFolderId();
+        List<UUID> childIds = folderRepository.getChildIds(folder.getObjectId());
         if (childIds.contains(parentFolderId)) {
             throw new InvalidDataException("The new parent folder is a child of the modified folder");
         }
-        Folder newParentFolder = getById(parentFolderId);
+        Folder newParentFolder;
+        try {
+            newParentFolder = getById(parentFolderId);
+        } catch (EntityNotFoundException e) {
+            throw new InvalidDataException(e.getMessage());
+        }
         folder.setParentFolder(newParentFolder);
 
         try {
@@ -98,7 +102,6 @@ public class FolderService implements EntityService<Folder, UUID> {
 
         return folder;
     }
-
 
 
 }

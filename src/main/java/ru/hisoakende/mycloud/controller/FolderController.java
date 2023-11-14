@@ -86,7 +86,7 @@ public class FolderController {
         Folder folder = entityFinder.findEntityOr404(folderService, uuid);
         try {
             folderService.move(folder, folderParentIdDto);
-        } catch (InvalidDataException | EntityNotFoundException e) {
+        } catch (InvalidDataException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
         }
         FolderReadDto folderReadDto = folderMapper.folderToFolderReadDto(folder);
