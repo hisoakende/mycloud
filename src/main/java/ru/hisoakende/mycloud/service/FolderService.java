@@ -1,6 +1,5 @@
 package ru.hisoakende.mycloud.service;
 
-import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.hisoakende.mycloud.dto.FolderParentIdDto;
@@ -12,10 +11,11 @@ import ru.hisoakende.mycloud.exception.InvalidDataException;
 import ru.hisoakende.mycloud.repository.FolderRepository;
 import ru.hisoakende.mycloud.repository.ObjectRepository;
 
-import java.sql.SQLException;
+
 import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 public class FolderService implements EntityService<Folder, UUID> {
@@ -76,10 +76,11 @@ public class FolderService implements EntityService<Folder, UUID> {
             throws InvalidDataException, EntityNotFoundException {
 
         UUID parentFolderId =folderParentIdDto.getParentFolderId();
-        Folder newParentFolder = getById(parentFolderId);
-        if (folder.getChildFolders().contains(newParentFolder)) {
+        List<UUID> childIds= folderRepository.getChildIds(folder.getObjectId());
+        if (childIds.contains(parentFolderId)) {
             throw new InvalidDataException("The new parent folder is a child of the modified folder");
         }
+        Folder newParentFolder = getById(parentFolderId);
         folder.setParentFolder(newParentFolder);
 
         try {

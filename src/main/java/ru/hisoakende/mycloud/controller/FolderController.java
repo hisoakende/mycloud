@@ -79,7 +79,7 @@ public class FolderController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/move/{uuid}")
+    @PatchMapping("/{uuid}/move")
     public ResponseEntity<FolderReadDto> moveFolder(@PathVariable UUID uuid,
                                                     @Valid @RequestBody FolderParentIdDto folderParentIdDto) {
 
