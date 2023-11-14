@@ -3,6 +3,7 @@ package ru.hisoakende.mycloud.service;
 import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import ru.hisoakende.mycloud.dto.FolderParentIdDto;
 import ru.hisoakende.mycloud.dto.FolderPatchDto;
 import ru.hisoakende.mycloud.entity.Folder;
 import ru.hisoakende.mycloud.entity.Object;
@@ -71,10 +72,13 @@ public class FolderService implements EntityService<Folder, UUID> {
         return folder;
     }
 
-    public void move(Folder folder, UUID parentFolderID) throws InvalidDataException, EntityNotFoundException {
-        Folder newParentFolder = getById(parentFolderID);
+    public void move(Folder folder, FolderParentIdDto folderParentIdDto)
+            throws InvalidDataException, EntityNotFoundException {
+
+        UUID parentFolderId =folderParentIdDto.getParentFolderId();
+        Folder newParentFolder = getById(parentFolderId);
         if (folder.getChildFolders().contains(newParentFolder)) {
-            throw new InvalidDataException("New parent folder is child");
+            throw new InvalidDataException("The new parent folder is a child of the modified folder");
         }
         folder.setParentFolder(newParentFolder);
 
@@ -83,7 +87,17 @@ public class FolderService implements EntityService<Folder, UUID> {
         } catch (DataIntegrityViolationException e) {
             throw new InvalidDataException(e.getMessage());
         }
-
+        updateUpdatedAt(folder);
     }
+
+    public Folder updateUpdatedAt(Folder folder) {
+        Object object = folder.getObject();
+        object.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        objectRepository.save(object);
+
+        return folder;
+    }
+
+
 
 }

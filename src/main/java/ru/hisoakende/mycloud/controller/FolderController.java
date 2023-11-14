@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.hisoakende.mycloud.dto.FolderCreateDto;
+import ru.hisoakende.mycloud.dto.FolderParentIdDto;
 import ru.hisoakende.mycloud.dto.FolderPatchDto;
 import ru.hisoakende.mycloud.dto.FolderReadDto;
 import ru.hisoakende.mycloud.entity.Folder;
@@ -83,7 +84,8 @@ public class FolderController {
     }
 
     @PatchMapping("/move/{uuid}")
-    public ResponseEntity<FolderReadDto> moveFolder(@PathVariable UUID uuid, @RequestHeader UUID parentFolderId) {
+    public ResponseEntity<FolderReadDto> moveFolder(@PathVariable UUID uuid,
+                                                    @Valid @RequestBody FolderParentIdDto folderParentIdDto) {
         Folder folder = null;
         try {
             folder = folderService.getById(uuid);
@@ -91,7 +93,7 @@ public class FolderController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Folder not found");
         }
         try {
-            folderService.move(folder, parentFolderId);
+            folderService.move(folder, folderParentIdDto);
         } catch (InvalidDataException | EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
         }
