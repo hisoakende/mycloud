@@ -18,15 +18,4 @@ public class FolderServiceDecorator extends ServiceDecorator<Folder, FolderUpdat
         super(service);
     }
 
-    @Transactional
-    public Folder move(Folder folder, UUID parentFolderID, UUID userId)
-            throws NoAccessToAction, InvalidDataException, EntityNotFoundException {
-        Folder movedFolder = service.move(folder, parentFolderID);
-        if (!movedFolder.getFolder().getObject().isWrite() ||
-                (!movedFolder.getObject().isWrite() ||
-                        movedFolder.getObject().getOwnerId() != userId)) {
-            throw new NoAccessToAction();
-        }
-        return movedFolder;
-    }
 }

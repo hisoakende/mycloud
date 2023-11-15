@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import ru.hisoakende.mycloud.decorators.FileServiceDecorator;
-import ru.hisoakende.mycloud.dto.FileCreateDto;
-import ru.hisoakende.mycloud.dto.FileReadDto;
-import ru.hisoakende.mycloud.dto.FileUpdateDto;
+import ru.hisoakende.mycloud.dto.*;
 import ru.hisoakende.mycloud.entity.File;
+import ru.hisoakende.mycloud.entity.Folder;
+import ru.hisoakende.mycloud.exception.EntityNotFoundException;
 import ru.hisoakende.mycloud.exception.InvalidDataException;
 import ru.hisoakende.mycloud.exception.InvalidFileException;
 import ru.hisoakende.mycloud.exception.NoAccessToAction;
@@ -107,6 +107,34 @@ public class FileController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{uuid}")
+    public ResponseEntity<FileReadDto> updateFolder(
+            @RequestHeader(name = "x-user-id") UUID userId,
+            @Valid @RequestBody FileUpdateDto fileUpdateDto,
+            @PathVariable UUID uuid
+    ) {
+        File file;
+        try {
+            file = fileService.getById(uuid, userId);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Folder not found");
+        } catch (NoAccessToAction e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        File updatedFile;
+        try {
+            updatedFile = fileService.update(file, fileUpdateDto, userId);
+        } catch (InvalidDataException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
+        } catch (NoAccessToAction e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        FileReadDto fileReadDto = fileMapper.fileToFileReadDto(updatedFile);
+        return ResponseEntity.ok().body(fileReadDto);
+    }
+
     @DeleteMapping("/{uuid}")
     public ResponseEntity<?> deleteFile(
             @RequestHeader(name = "x-user-id") UUID userId,
@@ -126,5 +154,31 @@ public class FileController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{uuid}/move")
+    public ResponseEntity<FileReadDto> moveFile(
+            @RequestHeader(name = "x-user-id") UUID userId,
+            @PathVariable UUID uuid,
+            @Valid @RequestBody FileMovedDto fileMovedDto
+    ) {
+        File file;
+        try {
+            file = entityFinder.findEntityOr404(fileService, uuid, userId);
+        } catch (NoAccessToAction e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        File movedFile;
+        try {
+            movedFile = fileService.move(file, fileMovedDto.getFolderId(), userId);
+        } catch (InvalidDataException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
+        } catch (NoAccessToAction e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        FileReadDto fileReadDto = fileMapper.fileToFileReadDto(movedFile);
+
+        return ResponseEntity.ok().body(fileReadDto);
     }
 }

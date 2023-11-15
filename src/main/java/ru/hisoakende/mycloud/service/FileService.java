@@ -15,6 +15,7 @@ import ru.hisoakende.mycloud.repository.ObjectRepository;
 import ru.hisoakende.mycloud.util.FileSaver;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,11 +58,6 @@ public class FileService implements BaseEntityService<File, FileUpdateDto> {
         return file;
     }
 
-    @Override
-    public File update(File file, FileUpdateDto fileUpdateDto) throws InvalidDataException {
-        return null;
-    }
-
     public void uploadFileData(MultipartFile fileData, File file)
             throws InvalidFileException, IOException {
         if (fileData.isEmpty()) {
@@ -76,5 +72,40 @@ public class FileService implements BaseEntityService<File, FileUpdateDto> {
     @Override
     public void delete(File file) {
         objectRepository.delete(file.getObject());
+    }
+
+    @Override
+    public File update(File file, FileUpdateDto fileUpdateDto) throws InvalidDataException {
+        file.setName(fileUpdateDto.getName());
+        Object object = file.getObject();
+        object.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        object.setRead(fileUpdateDto.getRead() != null ? fileUpdateDto.getRead() : object.isRead());
+        object.setWrite(fileUpdateDto.getWrite() != null ? fileUpdateDto.getWrite() : object.isWrite());
+        object.setDelete(fileUpdateDto.getDelete() != null ? fileUpdateDto.getDelete() : object.isDelete());
+
+        try {
+            fileRepository.save(file);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidDataException(e.getMessage());
+        }
+        file.setObject(objectRepository.save(object));
+
+        return file;
+    }
+
+    public File move(File file, UUID folderId) throws InvalidDataException {
+        file.setFolderId(folderId);
+        File movedFile;
+        try {
+            movedFile = fileRepository.save(file);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidDataException(e.getMessage());
+        }
+
+        Object object = file.getObject();
+        object.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        movedFile.setObject(objectRepository.save(object));
+
+        return movedFile;
     }
 }

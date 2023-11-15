@@ -74,12 +74,12 @@ public class FolderService implements BaseEntityService<Folder, FolderUpdateDto>
         return folder;
     }
 
-    public Folder move(Folder folder, UUID parentFolderID) throws InvalidDataException, EntityNotFoundException {
-        Folder newParentFolder = getById(parentFolderID);
-        if (folder.getChildFolders().contains(newParentFolder)) {
-            throw new InvalidDataException("New parent folder is child");
+    public Folder move(Folder folder, UUID folderId) throws InvalidDataException {
+        Folder newParentFolder = folderRepository.findFolderInHierarchy(folder.getObjectId(), folderId);
+        if (newParentFolder != null) {
+            throw new InvalidDataException("The new parent folder is a child of the modified folder");
         }
-        folder.setFolder(newParentFolder);
+        folder.setFolderId(folderId);
 
         Folder movedFolder;
         try {
@@ -87,6 +87,11 @@ public class FolderService implements BaseEntityService<Folder, FolderUpdateDto>
         } catch (DataIntegrityViolationException e) {
             throw new InvalidDataException(e.getMessage());
         }
+
+        Object object = folder.getObject();
+        object.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        movedFolder.setObject(objectRepository.save(object));
+
         return movedFolder;
     }
 }

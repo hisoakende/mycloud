@@ -15,5 +15,7 @@ public interface BaseEntityService<Entity extends EntityInterface, UpdateDto ext
 
     Entity update(Entity entity, UpdateDto dto) throws InvalidDataException;
 
+    Entity move(Entity entity, UUID folderId) throws InvalidDataException;
+
     void delete(Entity entity);
 }

@@ -15,5 +15,7 @@ public interface EntityService<Entity, UpdateDto extends Dto> {
 
     Entity update(Entity entity, UpdateDto dto, UUID userId) throws InvalidDataException, NoAccessToAction;
 
+    Entity move(Entity entity, UUID folderId, UUID userId) throws InvalidDataException, NoAccessToAction;
+
     void delete(Entity entity, UUID userId) throws NoAccessToAction;
 }

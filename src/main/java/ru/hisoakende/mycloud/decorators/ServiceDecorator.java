@@ -3,6 +3,7 @@ package ru.hisoakende.mycloud.decorators;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hisoakende.mycloud.dto.Dto;
 import ru.hisoakende.mycloud.entity.EntityInterface;
+import ru.hisoakende.mycloud.entity.Folder;
 import ru.hisoakende.mycloud.exception.EntityNotFoundException;
 import ru.hisoakende.mycloud.exception.InvalidDataException;
 import ru.hisoakende.mycloud.exception.NoAccessToAction;
@@ -60,5 +61,18 @@ public class ServiceDecorator
         if (!entity.getObject().getOwnerId().equals(userId) && !entity.getObject().isDelete()) {
             throw new NoAccessToAction();
         }
+    }
+
+    @Override
+    @Transactional
+    public SubEntity move(SubEntity folder, UUID folderID, UUID userId)
+            throws NoAccessToAction, InvalidDataException {
+        SubEntity movedFolder = service.move(folder, folderID);
+        if (!movedFolder.getFolder().getObject().isWrite() ||
+                (!movedFolder.getObject().isWrite() ||
+                        movedFolder.getObject().getOwnerId() != userId)) {
+            throw new NoAccessToAction();
+        }
+        return movedFolder;
     }
 }

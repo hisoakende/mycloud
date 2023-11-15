@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.hisoakende.mycloud.decorators.FolderServiceDecorator;
 import ru.hisoakende.mycloud.dto.FolderCreateDto;
+import ru.hisoakende.mycloud.dto.FolderMovedDto;
 import ru.hisoakende.mycloud.dto.FolderUpdateDto;
 import ru.hisoakende.mycloud.dto.FolderReadDto;
 import ru.hisoakende.mycloud.entity.Folder;
@@ -121,25 +122,23 @@ public class FolderController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/move/{uuid}")
+    @PatchMapping("/{uuid}/move")
     public ResponseEntity<FolderReadDto> moveFolder(
             @RequestHeader(name = "x-user-id") UUID userId,
             @PathVariable UUID uuid,
-            @RequestHeader UUID parentFolderId
+            @Valid @RequestBody FolderMovedDto folderMovedDto
     ) {
         Folder folder;
         try {
-            folder = folderService.getById(uuid, userId);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Folder not found");
+            folder = entityFinder.findEntityOr404(folderService, uuid, userId);
         } catch (NoAccessToAction e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
         Folder movedFolder;
         try {
-            movedFolder = folderService.move(folder, parentFolderId, userId);
-        } catch (InvalidDataException | EntityNotFoundException e) {
+            movedFolder = folderService.move(folder, folderMovedDto.getFolderId(), userId);
+        } catch (InvalidDataException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
         } catch (NoAccessToAction e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
