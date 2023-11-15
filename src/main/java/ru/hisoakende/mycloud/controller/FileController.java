@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import ru.hisoakende.mycloud.dto.FileCreateDto;
+import ru.hisoakende.mycloud.dto.FilePatchDto;
 import ru.hisoakende.mycloud.dto.FileReadDto;
 import ru.hisoakende.mycloud.entity.File;
 import ru.hisoakende.mycloud.exception.InvalidFileException;
@@ -89,5 +90,20 @@ public class FileController {
         File file = entityFinder.findEntityOr404(fileService, uuid);
         fileService.delete(file);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{uuid}")
+    public ResponseEntity<FileReadDto> updateFile(@PathVariable UUID uuid,
+                                                  @Valid @RequestBody FilePatchDto filePatchDto) {
+
+        File file = entityFinder.findEntityOr404(fileService, uuid);
+        try {
+            file = fileService.update(file, filePatchDto);
+        } catch (InvalidDataException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
+        }
+        FileReadDto fileReadDto = fileMapper.fileToFileReadDto(file);
+
+        return ResponseEntity.ok().body(fileReadDto);
     }
 }
