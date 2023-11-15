@@ -34,6 +34,11 @@ public class BaseServiceDecorator
         return service.update(subEntity, dto);
     }
 
+    @Override
+    public SubEntity move(SubEntity entity, UUID folderId, UUID userId) throws InvalidDataException, NoAccessToAction {
+        return service.move(entity, folderId);
+    }
+
     public void delete(SubEntity entity, UUID userId) throws NoAccessToAction {
         service.delete(entity);
     }
