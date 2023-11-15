@@ -2,6 +2,7 @@ package ru.hisoakende.mycloud.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.hisoakende.mycloud.entity.File;
 import ru.hisoakende.mycloud.entity.Folder;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public class FolderReadDto implements Dto {
     private Date updatedAt;
 
     private List<FolderPreviewDto> childFolders;
+
+    private List<FileReadDto> files;
 
     private Boolean read;
 

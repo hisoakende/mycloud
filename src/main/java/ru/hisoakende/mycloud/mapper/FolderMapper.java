@@ -3,9 +3,11 @@ package ru.hisoakende.mycloud.mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.hisoakende.mycloud.dto.FileReadDto;
 import ru.hisoakende.mycloud.dto.FolderCreateDto;
 import ru.hisoakende.mycloud.dto.FolderPreviewDto;
 import ru.hisoakende.mycloud.dto.FolderReadDto;
+import ru.hisoakende.mycloud.entity.File;
 import ru.hisoakende.mycloud.entity.Folder;
 import ru.hisoakende.mycloud.entity.Object;
 
@@ -17,6 +19,9 @@ public class FolderMapper {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private FileMapper fileMapper;
 
     public Folder folderCreateDtoToFolder(FolderCreateDto folderCreateDTO) {
         Folder folder = modelMapper.map(folderCreateDTO, Folder.class);
@@ -36,10 +41,11 @@ public class FolderMapper {
 
     public FolderReadDto folderToFolderReadDto(Folder folder) {
         Object object = folder.getObject();
+        UUID parentFolderId = folder.getFolder() != null ? folder.getFolder().getObjectId() : null;
         FolderReadDto folderReadDTO = FolderReadDto.builder()
                 .uuid(folder.getObjectId())
                 .name(folder.getName())
-                .parentFolderId(folder.getFolder().getObjectId())
+                .parentFolderId(parentFolderId)
                 .createdAt(object.getCreatedAt())
                 .updatedAt(object.getUpdatedAt())
                 .read(object.isRead())
@@ -53,6 +59,10 @@ public class FolderMapper {
             previewDtoList = listFolderToListFolderPreviewDto(folder.getChildFolders());
         }
         folderReadDTO.setChildFolders(previewDtoList);
+
+        List<FileReadDto> fileReadDtoList = fileMapper.fileListToFileReadDtoList(folder.getFiles());
+        folderReadDTO.setFiles(fileReadDtoList);
+
         return folderReadDTO;
     }
 

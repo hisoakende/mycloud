@@ -9,6 +9,9 @@ import ru.hisoakende.mycloud.entity.File;
 import ru.hisoakende.mycloud.entity.Folder;
 import ru.hisoakende.mycloud.entity.Object;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class FileMapper {
 
@@ -45,5 +48,15 @@ public class FileMapper {
                 object.isDelete(),
                 object.getOwnerId()
         );
+    }
+
+    public List<FileReadDto> fileListToFileReadDtoList(List<File> files) {
+        List<FileReadDto> dtoList = new ArrayList<>();
+
+        for (File file: files) {
+            dtoList.add(fileToFileReadDto(file));
+        }
+
+        return dtoList;
     }
 }
