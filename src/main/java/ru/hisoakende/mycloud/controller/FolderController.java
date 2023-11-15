@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.hisoakende.mycloud.dto.FolderCreateDto;
+import ru.hisoakende.mycloud.dto.FolderParentIdDto;
 import ru.hisoakende.mycloud.dto.FolderPatchDto;
 import ru.hisoakende.mycloud.dto.FolderReadDto;
 import ru.hisoakende.mycloud.entity.Folder;
@@ -58,13 +59,9 @@ public class FolderController {
 
     @PatchMapping("/{uuid}")
     public ResponseEntity<FolderReadDto> updateFolder(@Valid @RequestBody FolderPatchDto folderPatchDto,
+
                                                      @PathVariable UUID uuid) {
-        Folder folder = null;
-        try {
-            folder = folderService.getById(uuid);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Folder not found");
-        }
+        Folder folder = entityFinder.findEntityOr404(folderService, uuid);
         try {
             folder = folderService.update(folder, folderPatchDto);
         } catch (InvalidDataException e) {
@@ -82,17 +79,14 @@ public class FolderController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/move/{uuid}")
-    public ResponseEntity<FolderReadDto> moveFolder(@PathVariable UUID uuid, @RequestHeader UUID parentFolderId) {
-        Folder folder = null;
+    @PatchMapping("/{uuid}/move")
+    public ResponseEntity<FolderReadDto> moveFolder(@PathVariable UUID uuid,
+                                                    @Valid @RequestBody FolderParentIdDto folderParentIdDto) {
+
+        Folder folder = entityFinder.findEntityOr404(folderService, uuid);
         try {
-            folder = folderService.getById(uuid);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Folder not found");
-        }
-        try {
-            folderService.move(folder, parentFolderId);
-        } catch (InvalidDataException | EntityNotFoundException e) {
+            folderService.move(folder, folderParentIdDto);
+        } catch (InvalidDataException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
         }
         FolderReadDto folderReadDto = folderMapper.folderToFolderReadDto(folder);

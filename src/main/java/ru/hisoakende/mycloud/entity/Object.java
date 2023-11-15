@@ -23,6 +23,7 @@ public class Object {
 
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
+    @Generated
     private Date updatedAt;
 
     @Override
