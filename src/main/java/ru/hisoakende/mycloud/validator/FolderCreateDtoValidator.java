@@ -19,9 +19,9 @@ public class FolderCreateDtoValidator implements ConstraintValidator<FolderCreat
 
     @Override
     public boolean isValid(FolderCreateDto folderCreateDTO, ConstraintValidatorContext constraintValidatorContext) {
-        UUID parentFolderId = folderCreateDTO.getParentFolderId();
+        UUID folderId = folderCreateDTO.getFolderId();
         try {
-            folderService.getById(parentFolderId);
+            folderService.getById(folderId);
         } catch (EntityNotFoundException e) {
             return false;
         }

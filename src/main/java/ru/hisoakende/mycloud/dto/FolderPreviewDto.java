@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FolderPreviewDto {
+public class FolderPreviewDto implements Dto {
 
     private UUID uuid;
 

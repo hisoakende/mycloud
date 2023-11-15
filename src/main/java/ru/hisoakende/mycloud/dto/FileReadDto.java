@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class FileReadDto {
+public class FileReadDto implements Dto {
 
     private UUID uuid;
 
@@ -21,4 +21,12 @@ public class FileReadDto {
     private Date createdAt;
 
     private Date updatedAt;
+
+    private Boolean read = false;
+
+    private Boolean write = false;
+
+    private Boolean delete = false;
+
+    private UUID ownerId;
 }

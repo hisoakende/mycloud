@@ -1,12 +1,19 @@
 package ru.hisoakende.mycloud.service;
 
+import ru.hisoakende.mycloud.dto.Dto;
 import ru.hisoakende.mycloud.exception.EntityNotFoundException;
 import ru.hisoakende.mycloud.exception.InvalidDataException;
+import ru.hisoakende.mycloud.exception.NoAccessToAction;
 
-public interface EntityService<Entity, IdType> {
-    Entity getById(IdType id) throws EntityNotFoundException;
+import java.util.UUID;
 
-    Entity create(Entity entity) throws InvalidDataException;
+public interface EntityService<Entity, UpdateDto extends Dto> {
 
-    void delete(Entity entity);
+    Entity getById(UUID id, UUID userId) throws EntityNotFoundException, NoAccessToAction;
+
+    Entity create(Entity entity, UUID userId) throws InvalidDataException, NoAccessToAction;
+
+    Entity update(Entity entity, UpdateDto dto, UUID userId) throws InvalidDataException, NoAccessToAction;
+
+    void delete(Entity entity, UUID userId) throws NoAccessToAction;
 }

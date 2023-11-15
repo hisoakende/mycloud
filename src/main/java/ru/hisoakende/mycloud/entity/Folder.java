@@ -4,12 +4,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 
-import java.io.Serializable;
 import java.util.*;
 
 @Data
 @Entity(name = "folder")
-public class Folder {
+public class Folder implements EntityInterface {
 
     @Id
     @Column(name = "object_id")
@@ -17,20 +16,20 @@ public class Folder {
 
     private String name;
 
-    @Column(name = "parent_folder_id", insertable = false, updatable = false)
-    private UUID parentFolderId;
+    @Column(name = "folder_id", insertable = false, updatable = false)
+    private UUID folderId;
 
     @ManyToOne
-    @JoinColumn(name = "parent_folder_id")
-    private Folder parentFolder;
+    @JoinColumn(name = "folder_id")
+    private Folder folder;
 
-    @OneToMany(mappedBy = "parentFolder")
+    @OneToMany(mappedBy = "folder")
     private List<Folder> childFolders;
 
     @OneToMany(mappedBy = "folder")
     private List<File> files;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "object_id")
     private Object object;
 
@@ -39,8 +38,8 @@ public class Folder {
         return "Folder{" +
                 "objectId=" + objectId +
                 ", name='" + name + '\'' +
-                ", parentFolderId=" + parentFolderId +
-                ", parentFolder=" + parentFolder +
+                ", folderId=" + folderId +
+                ", folder=" + folder +
                 ", object=" + object +
                 '}';
     }

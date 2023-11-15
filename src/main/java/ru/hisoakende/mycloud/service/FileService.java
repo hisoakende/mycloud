@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hisoakende.mycloud.dto.FileUpdateDto;
 import ru.hisoakende.mycloud.entity.File;
 import ru.hisoakende.mycloud.entity.Object;
 import ru.hisoakende.mycloud.exception.EntityNotFoundException;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 @Component
 @Service
-public class FileService implements EntityService<File, UUID> {
+public class FileService implements BaseEntityService<File, FileUpdateDto> {
 
     private final ObjectRepository objectRepository;
     private final FileRepository fileRepository;
@@ -43,8 +44,9 @@ public class FileService implements EntityService<File, UUID> {
 
     @Override
     public File create(File file) throws InvalidDataException {
-        Object object = objectRepository.save(new Object());
+        Object object = objectRepository.save(file.getObject());
         file.setObjectId(object.getUuid());
+        file.setObject(object);
 
         try {
             fileRepository.save(file);
@@ -52,8 +54,12 @@ public class FileService implements EntityService<File, UUID> {
             throw new InvalidDataException(e.getMessage());
         }
 
-        file.setObject(object);
         return file;
+    }
+
+    @Override
+    public File update(File file, FileUpdateDto fileUpdateDto) throws InvalidDataException {
+        return null;
     }
 
     public void uploadFileData(MultipartFile fileData, File file)

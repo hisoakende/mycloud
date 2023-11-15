@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-public class File {
+public class File implements EntityInterface {
 
     @Id
     @Column(name = "object_id")
@@ -25,7 +25,7 @@ public class File {
     @JoinColumn(name = "folder_id")
     private Folder folder;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "object_id")
     private Object object;
 }

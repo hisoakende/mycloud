@@ -12,16 +12,24 @@ import java.util.UUID;
 @Data
 @GroupSequence({FirstOrder.class, FolderCreateDto.class})
 @FolderCreateDtoConstraint
-public class FolderCreateDto {
+public class FolderCreateDto implements Dto {
 
     @NotNull(groups = FirstOrder.class) //todo найти способ валидации empty
-    private UUID parentFolderId;
+    private UUID folderId;
 
     @NotBlank(groups = FirstOrder.class)
     private String name;
 
+    private UUID ownerId;
+
+    private Boolean read = false;
+
+    private Boolean write = false;
+
+    private Boolean delete = false;
+
     @Override
     public String toString() {
-        return "FolderDTO{" + "parentId=" + parentFolderId + ", name='" + name + '\'' + '}';
+        return "FolderDTO{" + "parentId=" + folderId + ", name='" + name + '\'' + '}';
     }
 }

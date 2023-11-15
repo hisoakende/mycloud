@@ -18,12 +18,18 @@ public class FolderMapper {
     @Autowired
     private ModelMapper modelMapper;
 
-
     public Folder folderCreateDtoToFolder(FolderCreateDto folderCreateDTO) {
         Folder folder = modelMapper.map(folderCreateDTO, Folder.class);
         Folder mockParentFolder = new Folder();
-        mockParentFolder.setObjectId(folderCreateDTO.getParentFolderId());
-        folder.setParentFolder(mockParentFolder);
+        mockParentFolder.setObjectId(folderCreateDTO.getFolderId());
+        folder.setFolder(mockParentFolder);
+
+        Object object = new Object();
+        object.setRead(folderCreateDTO.getRead());
+        object.setWrite(folderCreateDTO.getWrite());
+        object.setDelete(folderCreateDTO.getDelete());
+        object.setOwnerId(folderCreateDTO.getOwnerId());
+        folder.setObject(object);
 
         return folder;
     }
@@ -33,9 +39,13 @@ public class FolderMapper {
         FolderReadDto folderReadDTO = FolderReadDto.builder()
                 .uuid(folder.getObjectId())
                 .name(folder.getName())
-                .parentFolderId(folder.getParentFolder().getObjectId())
+                .parentFolderId(folder.getFolder().getObjectId())
                 .createdAt(object.getCreatedAt())
-                .updatedAt(object.getUpdatedAt()).build();
+                .updatedAt(object.getUpdatedAt())
+                .read(object.isRead())
+                .write(object.isWrite())
+                .delete(object.isDelete())
+                .ownerId(object.getOwnerId()).build();
         List<FolderPreviewDto> previewDtoList;
         if (folder.getChildFolders() == null) {
             previewDtoList = new ArrayList<>();

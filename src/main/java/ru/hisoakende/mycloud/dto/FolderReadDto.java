@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class FolderReadDto {
+public class FolderReadDto implements Dto {
 
     private UUID uuid;
 
@@ -25,6 +25,13 @@ public class FolderReadDto {
 
     private List<FolderPreviewDto> childFolders;
 
+    private Boolean read;
+
+    private Boolean write;
+
+    private Boolean delete;
+
+    private UUID ownerId;
 
     @Override
     public String toString() {

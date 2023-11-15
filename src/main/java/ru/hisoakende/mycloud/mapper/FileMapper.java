@@ -21,6 +21,13 @@ public class FileMapper {
         mockFolder.setObjectId(fileCreateDto.getFolderId());
         file.setFolder(mockFolder);
 
+        Object object = new Object();
+        object.setRead(fileCreateDto.getRead());
+        object.setWrite(fileCreateDto.getWrite());
+        object.setDelete(fileCreateDto.getDelete());
+        object.setOwnerId(fileCreateDto.getOwnerId());
+        file.setObject(object);
+
         return file;
     }
 
@@ -32,7 +39,11 @@ public class FileMapper {
                 file.getPath(),
                 file.getFolderId(),
                 object.getCreatedAt(),
-                object.getUpdatedAt()
+                object.getUpdatedAt(),
+                object.isRead(),
+                object.isWrite(),
+                object.isDelete(),
+                object.getOwnerId()
         );
     }
 }
